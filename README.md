@@ -12,24 +12,36 @@
 
 ## 快速开始
 
-### 1. 本地直接跑（Python 3.10+）
+### 1. 直接用已发布的镜像（最省事）
+
+镜像由 CI 在 main 分支上构建并推送到 Docker Hub：
+
+```bash
+docker pull gift95/novalclean:latest
+docker run -d -p 8000:8000 -v "$PWD/work:/data/work" --name novel-txt-cleaner gift95/novalclean:latest
+```
+
+也可以拉某个提交对应的版本（标签是 7 位 commit sha）：`gift95/novalclean:sha-xxxxxxx`。
+
+### 2. 本地直接跑（Python 3.10+）
 
 ```bash
 pip install -r requirements.txt
 python app.py            # 默认 http://127.0.0.1:8000
 ```
 
-### 2. Docker
+### 3. 自己构建镜像
 
 ```bash
 docker build -t novel-txt-cleaner .
 docker run -d -p 8000:8000 -v "$PWD/work:/data/work" --name novel-txt-cleaner novel-txt-cleaner
 ```
 
-### 3. docker compose
+### 4. docker compose
 
 ```bash
-docker compose up -d --build
+docker compose up -d --build     # 本地构建
+docker compose up -d             # 优先用已 pull 下来的 gift95/novalclean:latest
 ```
 
 打开 `http://localhost:8000` 即可。健康检查走 `GET /healthz`（Dockerfile 里已配 `HEALTHCHECK`）。
