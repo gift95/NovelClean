@@ -1,0 +1,15 @@
+services:
+  clean:
+    build: .
+    image: novel-txt-cleaner:latest
+    container_name: novel-txt-cleaner
+    ports:
+      - "8000:8000"
+    environment:
+      MAX_FILE_BYTES: "33554432"
+      MAX_TOTAL_BYTES: "134217728"
+      MAX_FILES: "20"
+      JOB_TTL: "7200"
+    volumes:
+      - ./work:/data/work
+    restart: unless-stopped

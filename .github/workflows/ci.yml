@@ -1,0 +1,52 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: pip install -r requirements.txt -r requirements-dev.txt
+      - run: python -m pytest tests -q
+      - name: 冒烟测试（Web 接口）
+        run: |
+          python - <<'PY'
+          import io, sys
+          sys.path.insert(0, ".")
+          from app import app
+          c = app.test_client()
+          txt = ("书名\n作者：x\n第1张 开始\n　　他 说 了 一 句 话 。\n"
+                 "　　喜欢测试书：测试书。\n第2章 继续\n　　结局。。\n").encode("utf-8")
+          r = c.post("/api/clean", data={"files": (io.BytesIO(txt), "a.txt")},
+                     content_type="multipart/form-data")
+          assert r.status_code == 200, r.data
+          d = r.get_json()
+          res = d["results"][0]
+          assert res["chapters"] == 2
+          assert res["still_junk"] == 0 and res["still_space"] == 0
+          assert c.get(d["zip_url"]).status_code == 200
+          print("smoke ok")
+          PY
+
+  docker:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: 构建镜像
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          tags: novel-txt-cleaner:ci
