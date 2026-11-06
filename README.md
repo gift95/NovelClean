@@ -21,6 +21,8 @@ docker pull gift95/novelclean:latest
 docker run -d -p 8000:8000 -v "$PWD/work:/data/work" --name novel-txt-cleaner gift95/novelclean:latest
 ```
 
+镜像同时提供 **linux/amd64** 与 **linux/arm64** 两种架构，x86 服务器、Apple Silicon、ARM NAS / 树莓派都能直接用。
+
 也可以拉某个提交对应的版本（标签是 7 位 commit sha）：`gift95/novelclean:sha-xxxxxxx`。
 
 ### 2. 本地直接跑（Python 3.10+）
