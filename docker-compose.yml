@@ -1,7 +1,7 @@
 services:
   clean:
     build: .
-    image: gift95/novalclean:latest
+    image: gift95/novelclean:latest
     container_name: novel-txt-cleaner
     ports:
       - "8000:8000"

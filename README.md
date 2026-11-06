@@ -17,11 +17,11 @@
 镜像由 CI 在 main 分支上构建并推送到 Docker Hub：
 
 ```bash
-docker pull gift95/novalclean:latest
-docker run -d -p 8000:8000 -v "$PWD/work:/data/work" --name novel-txt-cleaner gift95/novalclean:latest
+docker pull gift95/novelclean:latest
+docker run -d -p 8000:8000 -v "$PWD/work:/data/work" --name novel-txt-cleaner gift95/novelclean:latest
 ```
 
-也可以拉某个提交对应的版本（标签是 7 位 commit sha）：`gift95/novalclean:sha-xxxxxxx`。
+也可以拉某个提交对应的版本（标签是 7 位 commit sha）：`gift95/novelclean:sha-xxxxxxx`。
 
 ### 2. 本地直接跑（Python 3.10+）
 
@@ -41,7 +41,7 @@ docker run -d -p 8000:8000 -v "$PWD/work:/data/work" --name novel-txt-cleaner no
 
 ```bash
 docker compose up -d --build     # 本地构建
-docker compose up -d             # 优先用已 pull 下来的 gift95/novalclean:latest
+docker compose up -d             # 优先用已 pull 下来的 gift95/novelclean:latest
 ```
 
 打开 `http://localhost:8000` 即可。健康检查走 `GET /healthz`（Dockerfile 里已配 `HEALTHCHECK`）。
